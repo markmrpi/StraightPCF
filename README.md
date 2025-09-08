@@ -84,7 +84,36 @@ Given the coupled VM stack checkpoint, the full network can be trained using:
 python train_straightpcf.py --val_freq=2000 --train_cvm_network=True --feat_embedding_dim=128 --decoder_hidden_dim=64
 ```
 
-The folder for each training run is placed within ```./logs``` and you can access the necessary checkpoints there. 
+The folder for each training run is placed within ```./logs``` and you can access the necessary checkpoints there.
+
+## Predicting Height Above Ground (HAG)
+
+We provide a simple pipeline to regress HAG values directly from XYZ point
+coordinates stored in LAS/LAZ files.  Training and validation require files
+that contain both XYZ and a ``HAG`` attribute, while test files only need
+XYZ.  Predictions are written back to new LAS/LAZ files containing the
+estimated ``HAG`` attribute.
+
+First install the additional dependency:
+
+```
+pip install laspy
+```
+
+To train the predictor (data expected under ``./data/train`` and
+``./data/val``):
+
+```
+python train_hag.py --epochs=20 --batch-size=4096
+```
+
+Given a trained checkpoint, HAG values for files in ``./data/test`` can be
+generated with:
+
+```
+python predict_hag.py --checkpoint path/to/hag_predictor.pth
+```
+
 
 ## Acknowledgement and citation
 Our code is partially based on ``Score-Based Point Cloud Denoising`` by Shitong Luo and Wei Hu. Kudos to them for their excellent implementation and resources. Please check their GitHub repo [here](https://github.com/luost26/score-denoise).
